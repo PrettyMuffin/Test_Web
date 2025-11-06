@@ -6,23 +6,19 @@ on:
       - feature/*
 
 permissions:
-  contents: write
   pull-requests: write
+  contents: read
 
 jobs:
   create_pr:
     runs-on: ubuntu-latest
     if: github.actor != 'github-actions[bot]'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+      - name: Create pull request
+        uses: repo-sync/pull-request@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: ${{ github.ref_name }} # il branch che ha generato il push
-          title: "Verifica documentazione - ${{ github.ref_name }} → main"
-          body: "Controllare registro modifiche e validità contenuti."
-          draft: false
+          source_branch: ${{ github.ref_name }}
+          destination_branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "Auto PR - ${{ github.ref_name }} → main"
+          pr_body: "PR automatica generata dal push su ${{ github.ref_name }}"
